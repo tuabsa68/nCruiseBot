@@ -2,8 +2,8 @@ import telebot
 import openai
 
 # Telegram ва OpenAI API калитларини киритинг
-TELEGRAM_BOT_TOKEN = "SENING_TELEGRAM_BOT_TOKENING"
-OPENAI_API_KEY = "SENING_OPENAI_API_KEYING"
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
 openai.api_key = OPENAI_API_KEY
