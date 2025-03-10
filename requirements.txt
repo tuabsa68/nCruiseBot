@@ -1,4 +1,5 @@
-telebot
+telebot==0.0.5
 openai
 flask
 gunicorn
+
