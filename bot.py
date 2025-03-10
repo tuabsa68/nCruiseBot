@@ -7,12 +7,12 @@ from flask import Flask, request
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-# Bot ва Flask инициализацияси
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
 openai.api_key = OPENAI_API_KEY
+
 app = Flask(__name__)
 
-# Webhook маршрути - POST методи билан
+# Webhook маршрути
 @app.route('/', methods=['POST'])
 def webhook():
     if request.headers.get('content-type') == 'application/json':
