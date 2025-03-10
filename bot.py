@@ -8,11 +8,14 @@ bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
 @app.route(f'/{TOKEN}', methods=['POST'])
-def receive_update():
-    json_str = request.get_data().decode('UTF-8')
-    update = telebot.types.Update.de_json(json_str)
-    bot.process_new_updates([update])
-    return 'OK', 200
+def webhook():
+    if request.headers.get('content-type') == 'application/json':
+        json_str = request.get_data().decode('UTF-8')
+        update = telebot.types.Update.de_json(json_str)
+        bot.process_new_updates([update])
+        return 'OK', 200
+    else:
+        return 'Unsupported Media Type', 415
 
 @app.route("/", methods=["GET"])
 def index():
