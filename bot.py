@@ -2,10 +2,16 @@ import telebot
 import os
 from flask import Flask, request
 
+# Muhit o'zgaruvchilaridan token olish
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 bot = telebot.TeleBot(TOKEN)
 
+# Flask ilovasini yaratish
 app = Flask(__name__)
+
+@app.route("/", methods=["GET"])
+def index():
+    return "Bot is running!", 200
 
 @app.route(f'/{TOKEN}', methods=['POST'])
 def webhook():
@@ -17,9 +23,15 @@ def webhook():
     else:
         return 'Unsupported Media Type', 415
 
-@app.route("/", methods=["GET"])
-def index():
-    return "Bot is running!", 200
+# Bot komandasi
+@bot.message_handler(commands=['start'])
+def start(message):
+    bot.send_message(message.chat.id, "👋 Ассалому алайкум! Мен nCruiseBot ботиман. Саволларингизни ёзинг!")
+
+# Matnli xabarlarni qayta ishlash
+@bot.message_handler(func=lambda message: True)
+def echo_all(message):
+    bot.send_message(message.chat.id, f"Siz yubordingiz: {message.text}")
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
