@@ -1,6 +1,7 @@
 import os
 import telebot
 import openai
+from flask import Flask, request
 
 # Telegram ва OpenAI API калитларини киритинг
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
