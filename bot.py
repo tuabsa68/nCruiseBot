@@ -3,28 +3,29 @@ import telebot
 import openai
 from flask import Flask, request
 
-# Telegram ва OpenAI API калитларини киритинг
+# API калитларини олиш
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
+# Bot ва Flask инициализацияси
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
 openai.api_key = OPENAI_API_KEY
-
 app = Flask(__name__)
 
-@app.route("/", methods=['GET', 'POST'])
+# Webhook маршрути
+@app.route('/', methods=['POST'])
 def webhook():
     if request.method == 'POST':
         update = telebot.types.Update.de_json(request.stream.read().decode("utf-8"))
         bot.process_new_updates([update])
         return "OK", 200
-    else:
-        return "Bot is running!", 200
 
+# Welcome хабар
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.reply_to(message, "👋 Assalomu alaykum! Men nCruiseBot botiman. Sizga InCruises haqida yordam bera olaman. Savollaringizni yozing!")
+    bot.reply_to(message, "👋 Assalomu alaykum! Men nCruiseBot botiman. Savollaringizни ёзинг!")
 
+# GPT билан мулоқот
 @bot.message_handler(func=lambda message: True)
 def chat_with_gpt(message):
     try:
@@ -34,8 +35,10 @@ def chat_with_gpt(message):
         )
         bot.reply_to(message, response["choices"][0]["message"]["content"])
     except Exception as e:
-        bot.reply_to(message, "❌ Xatolik yuz berdi. Keyinroq urinib ko'ring.")
+        print(f"Error: {e}")
+        bot.reply_to(message, "❌ Xatolik yuz berdi. Keyinroq урниб кўринг.")
 
+# Webhook ўрнатиш
 if __name__ == "__main__":
     WEBHOOK_URL = f"https://myincruisebot.onrender.com/"
     bot.remove_webhook()
