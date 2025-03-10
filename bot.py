@@ -27,7 +27,7 @@ def chat_with_gpt(message):
 
 if __name__ == "__main__":
     print("🤖 Bot ishga tushdi!")
-    bot.polling(none_stop=True)
+    set_webhook
 
 app = Flask(__name__)
 
