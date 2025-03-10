@@ -39,7 +39,7 @@ def chat_with_gpt(message):
         bot.reply_to(message, response["choices"][0]["message"]["content"])
     except Exception as e:
         print(f"Xatolik: {e}")
-        bot.reply_to(message, "❌ Xatolik yuz berdi. Keyinроқ урниб кўринг.")
+        bot.reply_to(message, "❌ Xatolik yuz berdi. Keyинроқ урниб кўринг.")
 
 # Webhook ўрнатиш
 if __name__ == "__main__":
