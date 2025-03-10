@@ -3,24 +3,25 @@ import telebot
 import openai
 from flask import Flask, request
 
-# API калитларини олиш
+# Telegram ва OpenAI API калитларини киритинг
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
 openai.api_key = OPENAI_API_KEY
 
+# Flask илова яратиш
 app = Flask(__name__)
 
 @app.route('/', methods=['POST'])
 def webhook():
-    if request.method == 'POST':
-        json_string = request.get_data().decode('utf-8')
-        update = telebot.types.Update.de_json(json_string)
+    if request.headers.get('content-type') == 'application/json':
+        json_str = request.get_data().decode('UTF-8')
+        update = telebot.types.Update.de_json(json_str)
         bot.process_new_updates([update])
-        return '!', 200
+        return '', 200
     else:
-        return 'Only POST method allowed', 405
+        return '', 403
 
 @app.route('/')
 def home():
@@ -42,14 +43,10 @@ def chat_with_gpt(message):
         bot.reply_to(message, "❌ Xatolik yuz berdi. Keyinroq urinib ko'ring.")
 
 if __name__ == "__main__":
-    # Webhook URL
+    # Webhook URL'ини ўрнатиш
     WEBHOOK_URL = f"{os.getenv('RENDER_EXTERNAL_HOSTNAME')}/"
-
-    # Webhook'ни янгилаш
     bot.remove_webhook()
     bot.set_webhook(url=WEBHOOK_URL)
-
-    # Flask серверни ишга тушириш
+    
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-
